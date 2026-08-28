@@ -1,0 +1,528 @@
+<title>Applied LLM Systems</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  :root{
+    --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#EAEEF3;
+    --ink:#13181F; --ink-2:#39424F; --muted:#68758A;
+    --rule:#D4DBE4; --rule-strong:#B4BFCD;
+    --accent:#2A47C4; --accent-ink:#1B2F8C; --accent-wash:#E6EAFA;
+    --signal:#9A6A12; --signal-wash:#F6EEDC;
+    --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --font-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --measure:68ch;
+    --t-mono:0.75rem; --t-small:0.9rem; --t-body:1.0625rem;
+    --t-h3:1.2rem; --t-h2:clamp(1.45rem,1.15rem+1vw,1.95rem);
+    --t-display:clamp(2.3rem,1.5rem+3.4vw,4.1rem);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1116; --surface:#151A21; --surface-2:#1B222B;
+      --ink:#E7ECF3; --ink-2:#BDC7D4; --muted:#8D9AAC;
+      --rule:#252D38; --rule-strong:#38424F;
+      --accent:#8AA6FF; --accent-ink:#B3C4FF; --accent-wash:#1A2340;
+      --signal:#D9AB55; --signal-wash:#2A2113;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1116; --surface:#151A21; --surface-2:#1B222B;
+    --ink:#E7ECF3; --ink-2:#BDC7D4; --muted:#8D9AAC;
+    --rule:#252D38; --rule-strong:#38424F;
+    --accent:#8AA6FF; --accent-ink:#B3C4FF; --accent-wash:#1A2340;
+    --signal:#D9AB55; --signal-wash:#2A2113;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-size:var(--t-body); line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 clamp(1rem,4vw,2.5rem);}
+  a{color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:3px;}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px;}
+  strong{font-weight:600;}
+  em{font-style:italic;}
+
+  .mono{font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.09em; text-transform:uppercase;}
+
+  /* ---------- masthead ---------- */
+  .masthead{border-bottom:1px solid var(--rule); background:var(--surface);}
+  .masthead .wrap{padding-top:clamp(2.5rem,6vw,4.5rem); padding-bottom:clamp(1.5rem,3vw,2.25rem);}
+  .eyebrow{color:var(--accent); display:flex; gap:.6rem; align-items:center; flex-wrap:wrap;}
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--rule); min-width:2rem;}
+  h1{
+    font-family:var(--font-display); font-weight:700; font-size:var(--t-display);
+    line-height:1.02; letter-spacing:-.025em; margin:1.1rem 0 0; text-wrap:balance;
+  }
+  .lede{max-width:52ch; color:var(--ink-2); font-size:clamp(1.05rem,1rem+.4vw,1.25rem); margin:1.1rem 0 0;}
+
+  .specsheet{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    border-top:1px solid var(--rule-strong); margin-top:clamp(1.75rem,4vw,2.75rem);
+  }
+  .spec{padding:.9rem 1rem .95rem 0; border-bottom:1px solid var(--rule);}
+  .spec dt{color:var(--muted); font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.09em; text-transform:uppercase;}
+  .spec dd{margin:.35rem 0 0; font-family:var(--font-display); font-weight:600; font-size:1.02rem; line-height:1.3;}
+
+  /* ---------- sticky nav ---------- */
+  nav.subnav{
+    position:sticky; top:0; z-index:20; background:var(--bg);
+    border-bottom:1px solid var(--rule);
+  }
+  nav.subnav .wrap{display:flex; gap:1.5rem; overflow-x:auto; padding-top:.7rem; padding-bottom:.7rem;}
+  nav.subnav a{
+    font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; white-space:nowrap; padding-bottom:.15rem;
+    border-bottom:1px solid transparent; transition:color .15s ease, border-color .15s ease;
+  }
+  nav.subnav a:hover{color:var(--ink); border-bottom-color:var(--accent);}
+
+  /* ---------- sections ---------- */
+  section{padding-top:clamp(2.75rem,6vw,4.5rem); scroll-margin-top:4rem;}
+  .sec-head{display:flex; align-items:baseline; gap:1rem; border-top:1px solid var(--rule-strong); padding-top:1rem; margin-bottom:1.5rem;}
+  .sec-head .num{font-family:var(--font-mono); font-size:var(--t-mono); color:var(--accent); letter-spacing:.1em;}
+  h2{font-family:var(--font-display); font-weight:600; font-size:var(--t-h2); letter-spacing:-.015em; margin:0; text-wrap:balance;}
+  .prose{max-width:var(--measure);}
+  .prose p{margin:0 0 1.05rem;}
+  .prose p:last-child{margin-bottom:0;}
+
+  /* ---------- fit columns ---------- */
+  .cols{display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:.5rem;}
+  .card{background:var(--surface); border:1px solid var(--rule); padding:1.25rem 1.35rem 1.4rem;}
+  .card h3{font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.09em; text-transform:uppercase; margin:0 0 .85rem; color:var(--muted);}
+  .card.fit h3{color:var(--accent);}
+  .card.nofit h3{color:var(--signal);}
+  .card ul{margin:0; padding-left:1.05rem;}
+  .card li{margin-bottom:.5rem;}
+  .card li:last-child{margin-bottom:0;}
+
+  /* ---------- diagram ---------- */
+  .diagram{
+    margin:1.5rem 0 0; background:var(--surface); border:1px solid var(--rule);
+    overflow-x:auto; padding:1.25rem;
+  }
+  .diagram pre{
+    margin:0; font-family:var(--font-mono); font-size:.72rem; line-height:1.55;
+    color:var(--ink-2); white-space:pre;
+  }
+
+  /* ---------- outcomes ---------- */
+  ol.outcomes{list-style:none; counter-reset:oc; margin:0; padding:0;
+    display:grid; gap:0; grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+  ol.outcomes li{counter-increment:oc; display:grid; grid-template-columns:2.6rem 1fr; gap:.4rem;
+    padding:.95rem 1.1rem .95rem 0; border-top:1px solid var(--rule);}
+  ol.outcomes li::before{
+    content:counter(oc,decimal-leading-zero); font-family:var(--font-mono); font-size:var(--t-mono);
+    color:var(--accent); padding-top:.35rem;
+  }
+
+  /* ---------- tables ---------- */
+  .tablewrap{overflow-x:auto; margin-top:.5rem; border:1px solid var(--rule); background:var(--surface);}
+  table{border-collapse:collapse; width:100%; font-size:var(--t-small); min-width:520px;}
+  th,td{text-align:left; padding:.72rem .95rem; border-bottom:1px solid var(--rule); vertical-align:top;}
+  thead th{
+    font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); background:var(--surface-2); position:sticky; top:0; border-bottom:1px solid var(--rule-strong);
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.num,th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums; white-space:nowrap; font-size:var(--t-mono); letter-spacing:.03em; text-transform:none;}
+  td.wk{font-family:var(--font-mono); font-variant-numeric:tabular-nums; color:var(--accent); font-size:var(--t-mono);}
+
+  /* ---------- modules ---------- */
+  .module{border-top:1px solid var(--rule); padding:1.6rem 0 1.5rem;}
+  .module:first-of-type{border-top:1px solid var(--rule-strong);}
+  .mod-bar{display:flex; flex-wrap:wrap; gap:.6rem 1.25rem; align-items:baseline; margin-bottom:.55rem;}
+  .mod-id{font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.1em; text-transform:uppercase;
+    color:var(--surface); background:var(--accent); padding:.2rem .5rem;}
+  .mod-id.track{background:var(--signal);}
+  .mod-meta{font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .module h3{font-family:var(--font-display); font-weight:600; font-size:var(--t-h3); margin:0 0 .7rem; letter-spacing:-.01em;}
+  .mod-note{max-width:var(--measure); color:var(--muted); font-style:italic; margin:0 0 .9rem;}
+  .module .body{max-width:var(--measure);}
+  .module .body p{margin:0 0 .9rem;}
+  .label{font-family:var(--font-mono); font-size:var(--t-mono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted);}
+  .build{background:var(--surface); border:1px solid var(--rule); padding:.95rem 1.1rem; margin:0 0 .75rem; max-width:var(--measure);}
+  .gate{border-left:3px solid var(--signal); background:var(--signal-wash); padding:.85rem 1.1rem; max-width:var(--measure);}
+  .gate .label{color:var(--signal);}
+  .build p,.gate p{margin:.35rem 0 0;}
+
+  /* ---------- faq ---------- */
+  details{border-bottom:1px solid var(--rule); padding:.85rem 0;}
+  details summary{cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:1.02rem; list-style:none;
+    display:flex; gap:.75rem; align-items:baseline;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:"+"; font-family:var(--font-mono); color:var(--accent); font-size:.95rem;}
+  details[open] summary::before{content:"–";}
+  details .answer{max-width:var(--measure); margin:.7rem 0 .2rem 1.5rem; color:var(--ink-2);}
+
+  footer{margin-top:clamp(3rem,7vw,5rem); border-top:1px solid var(--rule-strong); background:var(--surface);}
+  footer .wrap{padding-top:2rem; padding-bottom:2.5rem; display:flex; flex-wrap:wrap; gap:1rem 2rem; justify-content:space-between; align-items:baseline;}
+  footer p{margin:0; max-width:46ch; color:var(--muted); font-size:var(--t-small);}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important;}}
+  @media (max-width:640px){
+    thead th{position:static;}
+    .spec{padding-right:.75rem;}
+  }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow mono">Course syllabus · Cohort-based bootcamp</p>
+    <h1>Applied LLM Systems</h1>
+    <p class="lede">Twenty weeks, for working software engineers with no machine-learning background. You finish with a production LLM system you built, deployed, measured and can defend.</p>
+
+    <dl class="specsheet">
+      <div class="spec"><dt>Duration</dt><dd>20 weeks</dd></div>
+      <div class="spec"><dt>Commitment</dt><dd>~15 h / week</dd></div>
+      <div class="spec"><dt>Live contact</dt><dd>2 sessions weekly</dd></div>
+      <div class="spec"><dt>Prerequisite</dt><dd>Software experience</dd></div>
+      <div class="spec"><dt>ML background</dt><dd>Not required</dd></div>
+      <div class="spec"><dt>Hardware</dt><dd>Laptop, no GPU</dd></div>
+    </dl>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Sections">
+  <div class="wrap">
+    <a href="#about">The course</a>
+    <a href="#fit">Who it&rsquo;s for</a>
+    <a href="#build">What you build</a>
+    <a href="#outcomes">Outcomes</a>
+    <a href="#rhythm">Weekly rhythm</a>
+    <a href="#curriculum">Curriculum</a>
+    <a href="#assessment">Assessment</a>
+    <a href="#materials">Materials</a>
+    <a href="#policies">Policies</a>
+    <a href="#scope">Not covered</a>
+    <a href="#faq">FAQ</a>
+    <a href="#schedule">Schedule</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="about">
+    <div class="sec-head"><span class="num">01</span><h2>What this course is</h2></div>
+    <div class="prose">
+      <p>Most engineers learn LLMs from the outside in: call an API, paste a prompt, ship a demo. That stops working the first time someone asks <em>why is it slow</em>, <em>why did it answer that</em>, <em>how do you know it works</em>, or <em>can this run inside our network</em>.</p>
+      <p>This course goes the other way. You build a transformer from scratch, so the failure modes stop being magic. Then you build the system around it — an API, a retrieval pipeline, an agent, an eval harness, a security layer, tracing — and deploy it on Kubernetes. Every week ends with something running on your machine and a checkpoint you demonstrate out loud.</p>
+      <p><strong>It is a systems course, not a research course.</strong> You will not train a frontier model, invent an architecture, or read forty papers. You will build, measure and defend one real system.</p>
+    </div>
+  </section>
+
+  <section id="fit">
+    <div class="sec-head"><span class="num">02</span><h2>Who this is for</h2></div>
+    <div class="cols">
+      <div class="card fit">
+        <h3>A good fit if you</h3>
+        <ul>
+          <li>have professional software engineering experience — roughly two years or more, in any language — and write Python comfortably</li>
+          <li>know git, HTTP, the command line, and what a container is</li>
+          <li>can explain a system you built at work and why it is shaped that way</li>
+          <li>want to move into an Applied AI or AI Infrastructure role, or own the AI features on your current team</li>
+        </ul>
+      </div>
+      <div class="card nofit">
+        <h3>Not a good fit if you</h3>
+        <ul>
+          <li>are new to programming — this is not a first course</li>
+          <li>want prompt engineering and no-code tooling; that is a different, shorter course</li>
+          <li>cannot protect about fifteen hours a week for five months. The work is cumulative, and there is no way to absorb four missed weeks at once</li>
+        </ul>
+      </div>
+    </div>
+    <div class="prose" style="margin-top:1.4rem">
+      <p><strong>Explicitly not required:</strong> machine learning, data science, statistics, linear algebra beyond high-school level, a GPU, or a mathematics degree. Everything mathematical here is taught from zero, in the amount an engineer needs and no further.</p>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="sec-head"><span class="num">03</span><h2>What you will build</h2></div>
+    <div class="prose">
+      <p>One system, grown over twenty weeks. Every module adds a layer to the same codebase.</p>
+    </div>
+    <div class="diagram" role="img" aria-label="Architecture: documents flow into an incremental, PII-redacted ingestion pipeline feeding a versioned index; a user request enters an HTTP API, passes through retrieval, reranking and an agent loop to the model, and returns as a streamed answer. Audit logging, tracing and an eval gate wrap the whole path.">
+<pre>                     ┌─────────────────────────────────────────┐
+   documents ───────► │  ingestion pipeline — incremental,      │
+                      │  PII-redacted, versioned index          │
+                      └──────────────────┬──────────────────────┘
+                                         ▼
+   user ──► HTTP API ──► retrieval ──► rerank ──► agent loop ──► LLM ──► SSE stream
+               │             │                        │           │
+               │             └── hybrid search        └── tools   └── vLLM on Kubernetes
+               │
+               ├── audit log · tenant isolation · secrets
+               ├── OpenTelemetry traces → self-hosted Langfuse
+               └── eval harness gates every deploy in CI</pre>
+    </div>
+    <div class="prose" style="margin-top:1.4rem">
+      <p>By demo day this system ingests a corpus incrementally and re-runs for free when nothing changed; answers over a streaming HTTP API with citations; runs an agent with tools, cost caps and retry logic; redacts personal data and writes an audit record for every query; emits traces you can debug a bad answer from; blocks its own deploy when quality drops; and runs on a Kubernetes cluster with vLLM, Prometheus and Grafana — on your laptop.</p>
+      <p>You also leave with a from-scratch GPT implementation, a working tokenizer, a memory calculator you trust, and a design document good enough to send to a hiring manager.</p>
+    </div>
+  </section>
+
+  <section id="outcomes">
+    <div class="sec-head"><span class="num">04</span><h2>Learning outcomes</h2></div>
+    <ol class="outcomes">
+      <li><strong>Implement a transformer from scratch</strong> — tokenizer, attention, the block, sampling — from an empty file, explaining every dimension.</li>
+      <li><strong>Count bytes before you buy hardware</strong> — parameters, gradients, optimizer state, activations, KV cache — and size a deployment on paper in under three minutes.</li>
+      <li><strong>Ship an LLM service like a backend engineer</strong> — REST contract, SSE streaming with correct cancellation, async concurrency with timeouts and backpressure, a container, and tests that run offline in seconds.</li>
+      <li><strong>Build retrieval that measurably works</strong> — chunking, hybrid search, reranking, citations — proven with recall numbers rather than vibes.</li>
+      <li><strong>Build an agent and break it on purpose</strong> — tools, step and cost caps, retries, cycle detection, prompt-injection exposure — then debug it from traces.</li>
+      <li><strong>Evaluate non-deterministic systems</strong> — golden sets, deterministic checks, a judge you validated against your own labels, and a CI gate that separates a real gain from noise.</li>
+      <li><strong>Handle the constraints real customers impose</strong> — PII redaction, GDPR and data residency, on-premise and air-gapped deployment, secrets, audit logging, tenant isolation.</li>
+      <li><strong>Operate the data layer</strong> — incremental ingestion, index versioning, zero-downtime rebuilds, backup, and a restore you have actually performed.</li>
+      <li><strong>Deploy and observe the platform</strong> — Kubernetes, vLLM, Helm, request routing, Prometheus and Grafana, load testing, autoscaling.</li>
+      <li><strong>Drive a 50-minute design conversation</strong> — clarify, estimate, draw, go deep, name trade-offs and failure modes.</li>
+    </ol>
+  </section>
+
+  <section id="rhythm">
+    <div class="sec-head"><span class="num">05</span><h2>Format and weekly rhythm</h2></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>When</th><th>What</th><th class="num">Hours</th></tr></thead>
+        <tbody>
+          <tr><td>Session A — midweek evening</td><td>Concept workshop. Live coding, whiteboard, questions. Recorded.</td><td class="num">2</td></tr>
+          <tr><td>Session B — weekend</td><td>Lab clinic. You build, instructors circulate, two students demo at the end.</td><td class="num">3</td></tr>
+          <tr><td>Independent</td><td>The week&rsquo;s build, from the module brief.</td><td class="num">~10</td></tr>
+          <tr><td>Office hours</td><td>Twice weekly, drop-in, optional.</td><td class="num">—</td></tr>
+          <tr><td>Cohort channel</td><td>Async help and code-review swaps. The room where most learning happens.</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose" style="margin-top:1.4rem">
+      <p><strong>Pair rotation.</strong> Every three weeks you are paired with a different cohort member for code review. You review their build, they review yours, and both reviews are visible to the instructors. Reading someone else&rsquo;s design decision is half the curriculum.</p>
+      <p><strong>Gates are spoken, not submitted.</strong> Each module ends with a checkpoint you demonstrate live in a ten-minute conversation: you run your build, then answer questions about it without notes. This is deliberate — the difference between recognising an idea and owning it only shows up when you have to say it out loud. Fail a gate and you retake it the following week. Nobody is removed from the cohort for it.</p>
+    </div>
+  </section>
+
+  <section id="curriculum">
+    <div class="sec-head"><span class="num">06</span><h2>Curriculum</h2></div>
+    <div class="prose"><p>Seven modules plus a parallel platform track. Hours are the expected total, live plus independent — about 288 across the course.</p></div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 0</span><span class="mod-meta">Week 0 · 4 h</span></div>
+      <h3>Orientation and setup</h3>
+      <div class="body"><p>Environment verified before week 1, not during it: Python toolchain, Docker, a working local model, API keys and budget, repository and CI skeleton. Cohort norms, how gates work, how to ask a good question in the channel. You receive the capstone brief on day one, because every module after this is a piece of it.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>Environment check passes on your own machine, and a hello-world service builds, tests and runs in CI.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 1</span><span class="mod-meta">Week 1 · 10 h</span></div>
+      <h3>Measuring things: the ML judgement an engineer needs</h3>
+      <p class="mod-note">Not a statistics course — the part of statistics you will be asked about in a design review.</p>
+      <div class="body">
+        <p>Overfitting, regularization and weight decay in plain terms. Confusion matrix, precision, recall, F1. ROC versus precision-recall under class imbalance. Picking a threshold as a product decision rather than a default. Data leakage: contamination, temporal, group — and benchmark contamination in LLMs. Ranking and retrieval metrics: recall@k, MRR, nDCG, and how to choose k. Comparing two systems: bootstrap confidence intervals, paired tests, sample size. Calibration, and what a confidence score does not mean. Data quality: missingness, imbalance, distribution shift.</p>
+      </div>
+      <div class="build"><span class="label">You build</span><p>recall@k, MRR and nDCG@k from scratch, unit-tested against numbers you computed on paper. Then <code>compare.py</code>: two lists of per-case scores in, mean difference and a bootstrap 95% interval out.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>Someone says <em>&ldquo;the new retriever scored 0.71 versus 0.68 on 200 queries.&rdquo;</em> Inside a minute you say whether it is real, what test you would run, and how many more queries you need.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 2</span><span class="mod-meta">Weeks 2–3 · 28 h</span></div>
+      <h3>Deep learning core: autograd to memory arithmetic</h3>
+      <p class="mod-note">Enough depth to stop guessing. You implement backpropagation, then learn to count bytes — the skill every later module leans on.</p>
+      <div class="body">
+        <p>Tensors, shapes, broadcasting, <code>einsum</code>, devices and dtypes. Autograd: the graph, <code>backward()</code>, <code>detach</code> versus <code>no_grad</code>. Backpropagation by hand, and why activations must be kept. Cross-entropy, softmax and the log-sum-exp trick; logits versus probabilities; temperature. MLPs, activations, initialization. LayerNorm, RMSNorm, pre-norm versus post-norm. Embedding layers: lookup tables, vocabulary × hidden as a share of the model, weight tying. Optimizers from SGD to AdamW, optimizer-state memory, warmup, clipping. A real training loop with checkpoint and resume. OOM debugging and gradient accumulation. Producing a loss spike on purpose and recovering from it. CNNs and RNNs at awareness level. Memory accounting — parameters, gradients, optimizer states, activations, KV cache and what GQA does to it. Arithmetic intensity: why prefill is compute-bound and decode is memory-bound.</p>
+      </div>
+      <div class="build"><span class="label">You build</span><p>A micrograd-style autograd engine with an operator you add yourself. A training loop you wrote that survives being killed mid-run — then you push the batch size until it dies, recover the effective batch with gradient accumulation, and deliberately poison a batch to watch a loss spike and fix it. Finally <code>memory_math.py</code>, checked against a published model&rsquo;s real numbers.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>On a whiteboard, in under three minutes: KV-cache bytes for a 7B model at batch 32, 4k context, GQA with 8 KV heads, bf16 — within 10%. And you diagnose an OOM, a corrupted batch and a too-high learning rate from a training log alone.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 3</span><span class="mod-meta">Weeks 4–5 · 16 h</span></div>
+      <h3>Production backend for AI services</h3>
+      <p class="mod-note">The layer between &ldquo;it works in a notebook&rdquo; and &ldquo;it serves users.&rdquo; Taught early, because everything after this is a service.</p>
+      <div class="body">
+        <p>REST design: resources, status codes, one error contract for every failure, cursor pagination, versioning and deprecation, idempotency keys, long-running work as 202 plus polling. Streaming: the SSE wire format, client disconnect and cancellation, proxies that silently buffer your stream, errors sent after the 200, parsing structured output as it arrives. Async Python at production level: the event loop, why one blocking call stalls every request on a worker, task groups, timeouts at every layer, semaphores, connection pooling, bounded queues as backpressure, the GIL versus asyncio versus processes. Containerization: multi-stage builds, layer caching, non-root, health checks, draining on <code>SIGTERM</code>. Testing LLM applications: mocking the provider at the HTTP boundary, recorded fixtures including streamed chunks, a scripted fake model to drive agent branches, what you must never assert, and where pytest stops and evaluation begins.</p>
+      </div>
+      <div class="build"><span class="label">You build</span><p>An HTTP API with a streaming endpoint, correct cancellation and a real error contract; an async fetcher that demonstrates the blocking-call collapse in measured numbers; a container; and a test suite that runs offline, without an API key, in under ten seconds.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>You explain what happens to fifty in-flight requests when someone drops a synchronous HTTP call into an async endpoint, name the fix, and describe what a container must do when Kubernetes sends <code>SIGTERM</code> mid-stream.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 4</span><span class="mod-meta">Weeks 6–10 · 62 h</span></div>
+      <h3>LLM internals: build a GPT from scratch</h3>
+      <p class="mod-note">The heaviest module. By the end you have typed every line of a working language model.</p>
+      <div class="body">
+        <p><strong>Tokenization</strong> — byte-pair encoding, training and encoding, special tokens and chat templates, the multilingual and code cost penalty. <strong>Attention</strong> — Q/K/V, scaled dot-product, causal masking, multi-head, the quadratic cost, MQA/GQA/MLA and what they do to cache size. <strong>Architecture assembly</strong> — the block, residuals, norms, positional encoding from absolute to RoPE, SwiGLU, counting parameters from a config. <strong>Decoding</strong> — greedy and beam, temperature, top-k, top-p, stop sequences, why <code>temperature=0</code> is still not bit-identical, and constrained decoding against a JSON schema. <strong>Modern variants</strong> — mixture of experts, active versus total parameters, long-context scaling. <strong>Pretraining</strong> — reading a training run, and scaling laws. <strong>Post-training</strong> — supervised fine-tuning, loss masking, RLHF and DPO, and what each stage buys. <strong>Fine-tuning in practice</strong> — LoRA, rank and alpha, target modules, and the decision framework for prompt versus retrieve versus fine-tune.</p>
+      </div>
+      <div class="build"><span class="label">You build</span><p>A BPE tokenizer trained on your own corpus, with a token-cost comparison across English, code and one non-English language. Causal multi-head attention with a GQA switch that prints cache size in bytes. A full GPT, plus <code>param_count(config)</code> reproducing a published model exactly. Top-k and top-p sampling, then a JSON-reliability experiment run fifty times with and without schema constraints. A LoRA fine-tune on a task where prompting demonstrably fails, reported with before-and-after accuracy, adapter size and training time.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>From an empty file you write causal multi-head attention from memory and it runs. Given a config you compute parameter count on paper to within 2%. And given a business problem you argue prompt versus retrieval versus fine-tuning in two minutes, with cost, latency and maintenance for each.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 5</span><span class="mod-meta">Weeks 11–16 · 88 h</span></div>
+      <h3>Applied LLM systems</h3>
+      <p class="mod-note">The largest module, and the one that produces your capstone. Six weeks of building a system that survives contact with reality.</p>
+      <div class="body">
+        <p><strong>Week 11 — Inference systems.</strong> Prefill versus decode; TTFT, TPOT and inter-token latency; KV-cache sizing and eviction; PagedAttention; continuous batching; prefix caching; quantization and speculative decoding. You measure your own stack at 1, 4 and 16 concurrent requests and explain where the knee is.</p>
+        <p><strong>Week 12 — Retrieval.</strong> Embeddings and similarity; chunking strategies; index internals — flat, IVF, HNSW — and the recall, latency and memory triangle; BM25 and hybrid retrieval; cross-encoder reranking; context construction, ordering, deduplication, budget, lost-in-the-middle; citations; permission-aware retrieval; the seven ways retrieval fails. You build a real retrieval service over a corpus you care about, hand-write thirty golden question-answer pairs, and report recall@5 three times: dense, hybrid, hybrid plus reranker.</p>
+        <p><strong>Week 13 — The data layer.</strong> SQL to a working level — joins, window functions, <code>EXPLAIN</code>, indexes, N+1 — because the customer&rsquo;s data is in a database. Then batch versus incremental ingestion, content-hash change detection, idempotent upserts, tombstones for deletes, dead-letter queues, resumable runs. Then versioning: pinning the embedding model beside the corpus, zero-downtime reindex by alias swap, snapshots, and a restore you actually perform.</p>
+        <p><strong>Week 14 — Agents.</strong> Tool schema design; the plan-act-observe loop and when a plain chain is better; context compaction; error recovery, retries, step limits, cost caps, cycle detection; prompt injection through tool output and retrieved text. You build an agent with three tools and full rails, then break it on purpose three ways and write up what happened.</p>
+        <p><strong>Week 15 — Evaluation.</strong> Eval types, golden versus synthetic data, deterministic checks, LLM-as-judge with a rubric and its biases, validating a judge against your own labels, the RAG triad, a regression suite in CI, and telling a real improvement from noise using Module 1. You build a forty-case harness that runs on one command and exits non-zero when quality drops.</p>
+        <p><strong>Week 16 — Security, privacy, observability, operations.</strong> Secrets management and scanning. PII detection and redaction, and the difference between redaction, pseudonymization and anonymization. GDPR in the parts that touch you — controller versus processor, subprocessors, international transfers, and what a right-to-erasure request means for a vector index, a cache and fine-tuned weights. On-premise and air-gapped deployment. Audit logging and tenant isolation with a cross-tenant leak test. Then OpenTelemetry with GenAI conventions, self-hosted Langfuse, and debugging a broken agent run from traces alone. Finally the operations layer: latency budgets, prompt caching, model routing and fallback, versioning prompts and indexes, shadow deploys, and a runbook.</p>
+      </div>
+      <div class="gate"><span class="label">Gate</span><p>Your system runs end to end: ingests incrementally, answers over a stream with citations, redacts personal data, writes an audit record, emits a trace, and fails CI when the eval score drops. You then debug a deliberately broken run using only the trace UI, and answer <em>&ldquo;can you delete everything about this person&rdquo;</em> with a real procedure — naming which parts take minutes, which wait for the next rebuild, and which you must design around from the start.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 6</span><span class="mod-meta">Weeks 17–19 · 40 h</span></div>
+      <h3>System design and technical communication</h3>
+      <p class="mod-note">Being right is half of it. This module is the other half.</p>
+      <div class="body">
+        <p>Driving the conversation: clarify, estimate, draw, go deep, state trade-offs, manage the clock. Turning a product ask into a problem with a metric, and knowing when rules beat a model. Data, labels and features; training/serving skew; feedback loops. Serving and latency: batch versus online, splitting a p95 budget across stages, multi-stage funnels, caching, graceful degradation. Monitoring, drift, silent failure, retraining triggers, shadow deploys and rollback.</p>
+        <p>Then four timed fifty-minute designs, spoken aloud, from a menu: an inference batching service at 100k requests per second; retrieval over 100 million documents; an evaluation pipeline as a batch system; an agent platform with sandboxing and durability; a ranking or recommendation system; fraud detection under a hard latency budget. Each rep is followed by a comparison against a reference solution and a written delta.</p>
+      </div>
+      <div class="gate"><span class="label">Gate</span><p>You drive one design end to end in fifty minutes: clarify, estimate memory and cache, draw the path from request to token, deep-dive one component the reviewer picks, and name three failure modes with mitigations.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id">Module 7</span><span class="mod-meta">Week 20 · 14 h</span></div>
+      <h3>Capstone hardening and demo day</h3>
+      <div class="body"><p>Hardening, documentation and a public demo. You present your system to the cohort and invited guests in fifteen minutes: what it does, one architectural decision you would defend, one thing that went wrong, and the numbers. Deliverables: the running system, a design document of two to four pages, your eval report, a one-page runbook, and a recorded demo.</p></div>
+    </div>
+
+    <div class="module">
+      <div class="mod-bar"><span class="mod-id track">Track P</span><span class="mod-meta">Weeks 4–16 · ~2 h / week · 26 h</span></div>
+      <h3>Platform lab — Kubernetes and vLLM, in parallel</h3>
+      <p class="mod-note">Runs alongside the modules, so your capstone has somewhere to live.</p>
+      <div class="body"><p>Kubernetes fundamentals — pods, deployments, services, config, secrets, probes, resources. Running vLLM with an OpenAI-compatible API on a CPU backend. Packaging with Helm. A request router and multiple replicas. Prometheus and Grafana with real inference metrics: TTFT, queue depth, KV-cache usage. Load testing with k6. Horizontal autoscaling. Later weeks add ingress and TLS, network policy and tenancy, and SRE practice — SLOs, burn-rate alerts, cost and capacity planning. Each session is a lesson plus a lab with an automated grader, so you know immediately whether it works.</p></div>
+      <div class="gate"><span class="label">Gate</span><p>You deploy your own capstone service to the cluster and show it under load on a Grafana dashboard.</p></div>
+    </div>
+  </section>
+
+  <section id="assessment">
+    <div class="sec-head"><span class="num">07</span><h2>Assessment and certification</h2></div>
+    <div class="prose"><p>There are no exams and no grades. There is a bar.</p></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Requirement</th><th>To pass</th></tr></thead>
+        <tbody>
+          <tr><td>Module gates</td><td>Pass at least 6 of the 7 module gates, demonstrated live</td></tr>
+          <tr><td>Weekly builds</td><td>Submit at least 16 of 20, each reviewed by a peer or an instructor</td></tr>
+          <tr><td>Platform lab</td><td>Your service deployed to the cluster, with a working dashboard</td></tr>
+          <tr><td>Capstone</td><td>System demo, design document, eval report and runbook</td></tr>
+          <tr><td>Attendance</td><td>80% of live sessions, or the recording plus a written catch-up note</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose" style="margin-top:1.2rem"><p>Meeting all five earns the certificate. Missing the capstone does not — the whole course points at it.</p></div>
+  </section>
+
+  <section id="materials">
+    <div class="sec-head"><span class="num">08</span><h2>Materials and costs</h2></div>
+    <div class="prose">
+      <p><strong>Two books, both required.</strong> Sebastian Raschka, <em>Build a Large Language Model (From Scratch)</em> — the spine of Module 4. Chip Huyen, <em>AI Engineering</em> — the spine of Module 5. Buy both before week 1.</p>
+      <p><strong>Everything else is free.</strong> Lesson pages, labs and graders are provided. All other reading is open — course sites, primary documentation, and a small, deliberate number of papers with the exact sections marked. Each topic caps at three sources; adding a fourth is procrastination with a good reputation.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>You provide</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td>Laptop</td><td>16 GB RAM minimum, ~60 GB free disk. Apple Silicon, Linux, or Windows with WSL2</td></tr>
+          <tr><td>GPU</td><td><strong>Not required.</strong> Everything runs on CPU or a paid API; GPU-only topics are taught as reading and marked as such</td></tr>
+          <tr><td>API credits</td><td>Roughly $40–70 across the whole course, for agent and eval work</td></tr>
+          <tr><td>Time</td><td>~15 h / week for 20 weeks. This is the real cost</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="policies">
+    <div class="sec-head"><span class="num">09</span><h2>Policies</h2></div>
+    <div class="prose">
+      <p><strong>Attendance.</strong> Live sessions are recorded. Missing one is fine; missing the lab clinic repeatedly is not, because that is where your work gets looked at.</p>
+      <p><strong>Late work.</strong> One week of grace on any build, no explanation needed. Beyond that, talk to an instructor before the deadline rather than after.</p>
+      <p><strong>AI assistants.</strong> Encouraged for the same things you would use them for at work: boilerplate, documentation lookup, debugging, review. <strong>Gates are oral and unassisted</strong> — you run your own code and answer questions about it. If an assistant wrote something you cannot explain, you have not finished the build. That is the entire policy, and the format enforces it rather than surveillance.</p>
+      <p><strong>Collaboration.</strong> Pair on problems, discuss designs, review each other&rsquo;s code. Submit your own work. Copying a solution wholesale is the only thing here that wastes your own money.</p>
+      <p><strong>Conduct.</strong> Questions are never stupid; the channel exists for them. Condescension toward another student is the one thing that gets you removed.</p>
+    </div>
+  </section>
+
+  <section id="scope">
+    <div class="sec-head"><span class="num">10</span><h2>What this course does not cover</h2></div>
+    <div class="prose"><p>Stated plainly, so nobody is surprised in week 12.</p></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Not covered</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Algorithm and data-structure interview prep</td><td>A separate discipline. Budget your own time if you are targeting companies that test it</td></tr>
+          <tr><td>Training frontier models, multi-node clusters, CUDA kernels</td><td>Taught as reading only — it needs hardware nobody in the cohort has</td></tr>
+          <tr><td>Data platforms — Airflow, dbt, Spark, warehouse modeling</td><td>An adjacent job. We cover the slice an AI engineer owns</td></tr>
+          <tr><td>Front-end development</td><td>Beyond consuming a streaming endpoint correctly</td></tr>
+          <tr><td>Prompt-engineering tricks as a subject</td><td>Covered where it belongs: one option among prompting, retrieval and fine-tuning</td></tr>
+          <tr><td>Vendor certifications</td><td>This is not a certification prep course</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="sec-head"><span class="num">11</span><h2>Frequently asked</h2></div>
+    <details>
+      <summary>I have never trained a model. Is Module 2 going to lose me?</summary>
+      <div class="answer">No. It starts at tensors and builds up, and the mathematics is taught as code you type. The students who struggle are short on time, not short on background.</div>
+    </details>
+    <details>
+      <summary>I don&rsquo;t have a GPU.</summary>
+      <div class="answer">Neither does the course. Every build runs on a laptop CPU or a paid API, and the topics that genuinely need a datacenter are taught as reading and marked as such.</div>
+    </details>
+    <details>
+      <summary>Can I do this alongside a full-time job?</summary>
+      <div class="answer">That is exactly who it is for — the schedule is built around evenings and one weekend block. Twenty weeks at fifteen hours is the honest cost, and because the structure is cumulative, falling four weeks behind is very hard to recover from.</div>
+    </details>
+    <details>
+      <summary>What if I fail a gate?</summary>
+      <div class="answer">You retake it the next week. Gates exist to tell you where you are, not to remove you.</div>
+    </details>
+    <details>
+      <summary>Do I finish with something to show?</summary>
+      <div class="answer">Yes, and it is the point: a deployed system, a design document, an eval report and a recorded demo — plus a from-scratch language model implementation and a memory calculator you trust.</div>
+    </details>
+  </section>
+
+  <section id="schedule">
+    <div class="sec-head"><span class="num">12</span><h2>Schedule at a glance</h2></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="num">Week</th><th class="num">Module</th><th>Focus</th><th>What you produce</th></tr></thead>
+        <tbody>
+          <tr><td class="wk">00</td><td class="num">0</td><td>Setup and orientation</td><td>Repository with CI</td></tr>
+          <tr><td class="wk">01</td><td class="num">1</td><td>Metrics, leakage, retrieval metrics, significance</td><td><code>compare.py</code> and metric implementations</td></tr>
+          <tr><td class="wk">02</td><td class="num">2</td><td>Tensors, autograd, backprop, losses, layers, embeddings</td><td>micrograd with your own operator</td></tr>
+          <tr><td class="wk">03</td><td class="num">2</td><td>Optimizers, training loop, OOM, loss spikes, memory math</td><td>Training loop with resume · <code>memory_math.py</code></td></tr>
+          <tr><td class="wk">04</td><td class="num">3 · P</td><td>API design and error contracts · Kubernetes core</td><td>HTTP API with a real error contract</td></tr>
+          <tr><td class="wk">05</td><td class="num">3 · P</td><td>Streaming, async Python, containers, testing</td><td>Streaming service and offline test suite</td></tr>
+          <tr><td class="wk">06</td><td class="num">4 · P</td><td>Tokenization</td><td>BPE tokenizer and token-cost table</td></tr>
+          <tr><td class="wk">07</td><td class="num">4 · P</td><td>Attention</td><td>Multi-head attention with a GQA switch</td></tr>
+          <tr><td class="wk">08</td><td class="num">4 · P</td><td>Architecture assembly</td><td>A working GPT and <code>param_count</code></td></tr>
+          <tr><td class="wk">09</td><td class="num">4 · P</td><td>Decoding and structured output</td><td>Sampler and JSON reliability experiment</td></tr>
+          <tr><td class="wk">10</td><td class="num">4 · P</td><td>Pretraining, alignment, LoRA fine-tuning</td><td>Fine-tune report with before/after numbers</td></tr>
+          <tr><td class="wk">11</td><td class="num">5 · P</td><td>Inference systems</td><td>TTFT and TPOT measurements on your own stack</td></tr>
+          <tr><td class="wk">12</td><td class="num">5 · P</td><td>Retrieval</td><td>Retrieval service and thirty golden pairs</td></tr>
+          <tr><td class="wk">13</td><td class="num">5 · P</td><td>SQL, ingestion, index versioning</td><td><code>ingest.py --since</code> and zero-downtime reindex</td></tr>
+          <tr><td class="wk">14</td><td class="num">5 · P</td><td>Agents</td><td>Agent with three tools, rails, and a break-it report</td></tr>
+          <tr><td class="wk">15</td><td class="num">5 · P</td><td>Evaluation</td><td>Forty-case harness with a validated judge, gating CI</td></tr>
+          <tr><td class="wk">16</td><td class="num">5 · P</td><td>Security, privacy, observability, operations</td><td>Data map, audit log, traces, runbook</td></tr>
+          <tr><td class="wk">17</td><td class="num">6</td><td>Design protocol, framing, data and labels</td><td>Design rep 1</td></tr>
+          <tr><td class="wk">18</td><td class="num">6</td><td>Serving, latency budgets, monitoring and drift</td><td>Design reps 2–3</td></tr>
+          <tr><td class="wk">19</td><td class="num">6</td><td>Reps and mock reviews</td><td>Design rep 4 and delta log</td></tr>
+          <tr><td class="wk">20</td><td class="num">7</td><td>Capstone hardening</td><td>Demo day</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Questions before enrolling are welcome — the honest answer to &ldquo;is this right for me&rdquo; is worth more to both of us than a filled seat.</p>
+    <p class="mono" style="letter-spacing:.09em">Applied LLM Systems · 20 weeks · Cohort 01</p>
+  </div>
+</footer>
