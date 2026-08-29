@@ -10,6 +10,8 @@
   Reported OpenAI behavioral questions. Use for: drill rotation, ownership/ambiguity themes.
 - [Question bank: Google DeepMind — Exponent](https://www.tryexponent.com/questions?company=google-deep-mind)
   Reported DeepMind questions incl. culture round. Use for: teamwork/feedback/research-collaboration themes.
+- [Question bank: Behavioral & Leadership, AI-role filtered — PracHub](https://prachub.com/?sort=hot&position=Software+Engineer%2CAI+Agent%2CStaff+AI-Native+Engineer%2CMachine+Learning+Engineer&category=Behavioral+%26+Leadership)
+  Suggested by its founder in a disclosed request (GitHub issue); reviewed Aug 2026. Link is pre-filtered to Behavioral & Leadership across SWE / ML Engineer / AI Agent / Staff AI-Native Engineer: 37 pages of results. Anthropic entries hit the culture round directly — "Describe a Strongly Held View That Proved Wrong", "Explain Your AI Safety Values", "Explain Your Motivation and Practical Approach to AI Safety", "Prepare for a Recruiter Motivation Screen". No DeepMind coverage. Caveat: no per-question source link or date, so treat as drill prompts, not as evidence of what gets asked. Use for: Anthropic culture-round rotation alongside Exponent; the strongly-held-view and AI-safety prompts are the two most worth rehearsing.
 - [Guide: The STAR Method complete guide — The Interview Guys](https://blog.theinterviewguys.com/the-star-method/)
   Baseline mechanics: Situation/Task/Action/Result, Action ≈ 50% of airtime. Use for: story structure at OpenAI/DeepMind (NOT verbatim at Anthropic culture round).
 - [Guide: Master the Behavioral Interview as a Senior Engineer — Shine Garg (Maven)](https://maven.com/uncharted-path-breakthroughs/senior-engineer-behavioral-interviews)
