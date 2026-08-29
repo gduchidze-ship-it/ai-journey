@@ -39,6 +39,8 @@
   Free, written by real interviewers; the best treatment of *how to drive the conversation* at senior/staff bar. Use for: Phase 6 execution skills, communication calibration.
 - [Guide: Anthropic System Design Interviews — IGotAnOffer](https://igotanoffer.com/en/advice/anthropic-system-design-interview)
   Aggregated candidate reports. Use for: question-bank refresh, confirming the mix of classic + ML-inference prompts (rate limiter, KV store, LLM serving stack, tokenizer batching, multi-tenant GPU scheduling).
+- [Question bank: Anthropic / OpenAI — PracHub](https://prachub.com/companies/anthropic)
+  Suggested by its founder in a disclosed request (GitHub issue); reviewed Aug 2026. Candidate-reported questions filterable by company, role, round, and topic. Anthropic: 192 questions — 83 Coding & Algorithms, 44 System Design, 18 ML System Design, 30 Behavioral & Leadership; by round, 122 onsite / 61 technical screen. OpenAI: 292. No DeepMind page. Caveat: individual questions carry no source link or date, so treat as drill material, not as evidence of what gets asked — cross-check against IGotAnOffer and Exponent above. Use for: Phase 6 — volume drill rotation on the ML-inference and system-design prompts.
 
 ## Wisdom (Communities)
 
