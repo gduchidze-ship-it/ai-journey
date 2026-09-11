@@ -1,0 +1,27 @@
+id: kb_009_empty_end_turn
+title: Model stops with end_turn and empty content
+slice: working
+kind: regression
+tags:
+- kb
+- regression
+- termination
+origin:
+  type: production
+  trace_ref: trace://prod/2026-09-02/44aa
+  date: '2026-09-02'
+  note: stop_reason said 'finished naturally'; the user saw a blank message. The end_turn trap (part 6
+    §6.5).
+input:
+  user_message: What's the return window for an item that has already been delivered?
+expect:
+  required_tools:
+  - search_kb
+  max_steps: 4
+  expected_steps: 2
+  final_answer:
+    contains_all:
+    - 30 days
+  citations:
+    required: true
+    all_valid: true

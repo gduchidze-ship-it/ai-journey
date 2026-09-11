@@ -1,0 +1,364 @@
+{
+  "$defs": {
+    "CitationExpectation": {
+      "properties": {
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "must_include": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Must Include",
+          "type": "array"
+        },
+        "all_valid": {
+          "default": true,
+          "title": "All Valid",
+          "type": "boolean"
+        }
+      },
+      "title": "CitationExpectation",
+      "type": "object"
+    },
+    "Expect": {
+      "additionalProperties": false,
+      "description": "Everything deterministic we assert about a trajectory for this case.",
+      "properties": {
+        "required_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Tools",
+          "type": "array"
+        },
+        "forbidden_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Tools",
+          "type": "array"
+        },
+        "precedence": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Precedence",
+          "type": "array"
+        },
+        "idempotent_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Idempotent Tools",
+          "type": "array"
+        },
+        "terminal_tool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Terminal Tool"
+        },
+        "order": {
+          "default": "subsequence",
+          "enum": [
+            "exact",
+            "subsequence",
+            "set"
+          ],
+          "title": "Order",
+          "type": "string"
+        },
+        "expected_tool_sequence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Tool Sequence",
+          "type": "array"
+        },
+        "max_steps": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Steps"
+        },
+        "expected_steps": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Steps"
+        },
+        "step_slack": {
+          "default": 2,
+          "title": "Step Slack",
+          "type": "integer"
+        },
+        "max_cost_usd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Cost Usd"
+        },
+        "max_wall_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Wall Ms"
+        },
+        "allowed_termination": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Termination",
+          "type": "array"
+        },
+        "require_content_on_done": {
+          "default": true,
+          "title": "Require Content On Done",
+          "type": "boolean"
+        },
+        "final_answer": {
+          "$ref": "#/$defs/FinalAnswerExpectation"
+        },
+        "citations": {
+          "$ref": "#/$defs/CitationExpectation"
+        },
+        "end_state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End State"
+        }
+      },
+      "title": "Expect",
+      "type": "object"
+    },
+    "FinalAnswerExpectation": {
+      "description": "Expectations on the final answer text / object. All optional; unset = not checked.",
+      "properties": {
+        "exact": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exact"
+        },
+        "normalized": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Normalized"
+        },
+        "contains_all": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contains All",
+          "type": "array"
+        },
+        "json_schema": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Json Schema"
+        }
+      },
+      "title": "FinalAnswerExpectation",
+      "type": "object"
+    },
+    "Origin": {
+      "description": "Where a case came from. `production` cases carry a trace reference; `synthetic`\ncases stay in the capability set until a human promotes them (part 3 \u00a73.4).",
+      "properties": {
+        "type": {
+          "enum": [
+            "production",
+            "handwritten",
+            "synthetic"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "trace_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trace Ref"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Date"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "Origin",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "slice": {
+      "enum": [
+        "working",
+        "heldout"
+      ],
+      "title": "Slice",
+      "type": "string"
+    },
+    "kind": {
+      "default": "regression",
+      "enum": [
+        "regression",
+        "capability"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "origin": {
+      "$ref": "#/$defs/Origin"
+    },
+    "input": {
+      "additionalProperties": true,
+      "title": "Input",
+      "type": "object"
+    },
+    "expect": {
+      "$ref": "#/$defs/Expect"
+    },
+    "trials": {
+      "default": 1,
+      "title": "Trials",
+      "type": "integer"
+    },
+    "pair_of": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pair Of"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "slice",
+    "origin",
+    "input",
+    "expect"
+  ],
+  "title": "Case",
+  "type": "object"
+}

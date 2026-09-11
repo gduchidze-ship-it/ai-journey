@@ -1,0 +1,25 @@
+id: cycle_012_repeated_window
+title: search → lookup → search → lookup, identical args, until the cycle rail trips
+slice: working
+kind: regression
+tags:
+- regression
+- cycles
+- termination
+origin:
+  type: production
+  trace_ref: trace://prod/2026-09-04/0c0c
+  date: '2026-09-04'
+input:
+  user_message: Where is my order A1001?
+  fixture: fixtures/end_states/acct_42_before.json
+expect:
+  required_tools:
+  - lookup_order
+  forbidden_tools:
+  - process_refund
+  - send_email
+  max_steps: 8
+  expected_steps: 2
+  allowed_termination:
+  - final_answer

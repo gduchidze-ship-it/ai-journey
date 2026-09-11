@@ -1,0 +1,58 @@
+{
+  "case_id": "kb_009_empty_end_turn",
+  "run_id": "kb_009_r1",
+  "model": "claude-sonnet-4-6",
+  "prompt_sha": "a3f9c2e1",
+  "steps": [
+    {
+      "i": 1,
+      "type": "tool_call",
+      "tool": "search_kb",
+      "args": {
+        "query": "return window for delivered items",
+        "top_k": 3
+      },
+      "result": {
+        "chunks": [
+          "chunk_3",
+          "chunk_7",
+          "chunk_9"
+        ]
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 2,
+      "type": "final_answer",
+      "content": "",
+      "citations": [],
+      "stop_reason": "end_turn",
+      "tokens_in": 1500,
+      "tokens_out": 120,
+      "cost_usd": 0.006,
+      "ms": 1100
+    }
+  ],
+  "termination": {
+    "loop_reason": "final_answer",
+    "model_stop_reason": "end_turn"
+  },
+  "totals": {
+    "steps": 2,
+    "tokens_in": 2700,
+    "tokens_out": 180,
+    "cost_usd": 0.01,
+    "wall_ms": 1900
+  },
+  "context_chunks": [
+    "chunk_3",
+    "chunk_7",
+    "chunk_9"
+  ],
+  "end_state": null
+}

@@ -1,0 +1,48 @@
+{
+  "verify_identity": {
+    "type": "object",
+    "required": ["customer_id", "last4"],
+    "properties": {
+      "customer_id": {"type": "string"},
+      "last4": {"type": "string", "pattern": "^[0-9]{4}$"}
+    },
+    "additionalProperties": false
+  },
+  "lookup_order": {
+    "type": "object",
+    "required": ["order_id"],
+    "properties": {
+      "order_id": {"type": "string"}
+    },
+    "additionalProperties": false
+  },
+  "process_refund": {
+    "type": "object",
+    "required": ["order_id", "amount", "reason"],
+    "properties": {
+      "order_id": {"type": "string"},
+      "amount": {"type": "number"},
+      "reason": {"type": "string"}
+    },
+    "additionalProperties": false
+  },
+  "search_kb": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": {"type": "string"},
+      "top_k": {"type": "integer"}
+    },
+    "additionalProperties": false
+  },
+  "send_email": {
+    "type": "object",
+    "required": ["to", "subject", "body"],
+    "properties": {
+      "to": {"type": "string"},
+      "subject": {"type": "string"},
+      "body": {"type": "string"}
+    },
+    "additionalProperties": false
+  }
+}

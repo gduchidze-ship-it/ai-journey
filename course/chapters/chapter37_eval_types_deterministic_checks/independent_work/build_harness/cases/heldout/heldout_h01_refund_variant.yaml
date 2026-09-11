@@ -1,0 +1,58 @@
+id: heldout_h01_refund_variant
+title: Refund path with an extra policy lookup in the middle
+slice: heldout
+kind: regression
+tags:
+- refund
+- regression
+- heldout
+origin:
+  type: handwritten
+  date: '2026-09-10'
+  note: Held out. Do not tune against this case. See cases/heldout/README.md.
+input:
+  user_message: Hi, I'm customer 42 (card ending 4242). Order A1001 arrived damaged — please refund it
+    in full.
+  fixture: fixtures/end_states/acct_42_before.json
+expect:
+  required_tools:
+  - verify_identity
+  - lookup_order
+  - process_refund
+  forbidden_tools:
+  - send_email
+  precedence:
+  - - verify_identity
+    - process_refund
+  - - lookup_order
+    - process_refund
+  idempotent_tools:
+  - process_refund
+  order: subsequence
+  expected_tool_sequence:
+  - verify_identity
+  - process_refund
+  max_steps: 8
+  expected_steps: 5
+  step_slack: 2
+  max_cost_usd: 0.1
+  allowed_termination:
+  - final_answer
+  final_answer:
+    json_schema:
+      type: object
+      required:
+      - status
+      - order_id
+      - amount
+      properties:
+        status:
+          enum:
+          - refunded
+          - declined
+        order_id:
+          type: string
+        amount:
+          type: number
+      additionalProperties: false
+  end_state: fixtures/end_states/acct_42_after_refund.json

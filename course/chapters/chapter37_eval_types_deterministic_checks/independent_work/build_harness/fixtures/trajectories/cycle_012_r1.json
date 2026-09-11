@@ -1,0 +1,152 @@
+{
+  "case_id": "cycle_012_repeated_window",
+  "run_id": "cycle_012_r1",
+  "model": "claude-sonnet-4-6",
+  "prompt_sha": "a3f9c2e1",
+  "steps": [
+    {
+      "i": 1,
+      "type": "tool_call",
+      "tool": "search_kb",
+      "args": {
+        "query": "order A1001 status",
+        "top_k": 3
+      },
+      "result": {
+        "chunks": [
+          "chunk_1"
+        ]
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 2,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1001"
+      },
+      "result": {
+        "status": "delivered",
+        "total": 60.0
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 3,
+      "type": "tool_call",
+      "tool": "search_kb",
+      "args": {
+        "query": "order A1001 status",
+        "top_k": 3
+      },
+      "result": {
+        "chunks": [
+          "chunk_1"
+        ]
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 4,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1001"
+      },
+      "result": {
+        "status": "delivered",
+        "total": 60.0
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 5,
+      "type": "tool_call",
+      "tool": "search_kb",
+      "args": {
+        "query": "order A1001 status",
+        "top_k": 3
+      },
+      "result": {
+        "chunks": [
+          "chunk_1"
+        ]
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 6,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1001"
+      },
+      "result": {
+        "status": "delivered",
+        "total": 60.0
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    }
+  ],
+  "termination": {
+    "loop_reason": "cycle_detected",
+    "model_stop_reason": "tool_use"
+  },
+  "totals": {
+    "steps": 6,
+    "tokens_in": 7200,
+    "tokens_out": 360,
+    "cost_usd": 0.024,
+    "wall_ms": 4800
+  },
+  "context_chunks": [
+    "chunk_1"
+  ],
+  "end_state": {
+    "accounts": {
+      "42": {
+        "customer_id": "42",
+        "balance": 0.0,
+        "orders": {
+          "A1001": {
+            "status": "delivered",
+            "total": 60.0,
+            "refunded": 0.0
+          }
+        }
+      }
+    },
+    "emails_sent": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "accounts": {
+    "42": {
+      "customer_id": "42",
+      "balance": 60.0,
+      "orders": {
+        "A1001": {
+          "status": "refunded",
+          "total": 60.0,
+          "refunded": 60.0
+        }
+      }
+    }
+  },
+  "emails_sent": []
+}

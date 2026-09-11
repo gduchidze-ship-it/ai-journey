@@ -1,0 +1,58 @@
+id: refund_001_happy_path
+title: Full refund for a damaged delivered order — the reference path
+slice: working
+kind: regression
+tags:
+- refund
+- regression
+origin:
+  type: handwritten
+  date: '2026-09-10'
+  note: The canonical happy path. Every other refund case is a variation of this one.
+input:
+  user_message: Hi, I'm customer 42 (card ending 4242). Order A1001 arrived damaged — please refund it
+    in full.
+  fixture: fixtures/end_states/acct_42_before.json
+expect:
+  required_tools:
+  - verify_identity
+  - lookup_order
+  - process_refund
+  forbidden_tools:
+  - send_email
+  precedence:
+  - - verify_identity
+    - process_refund
+  - - lookup_order
+    - process_refund
+  idempotent_tools:
+  - process_refund
+  order: subsequence
+  expected_tool_sequence:
+  - verify_identity
+  - process_refund
+  max_steps: 8
+  expected_steps: 4
+  step_slack: 2
+  max_cost_usd: 0.1
+  allowed_termination:
+  - final_answer
+  final_answer:
+    json_schema:
+      type: object
+      required:
+      - status
+      - order_id
+      - amount
+      properties:
+        status:
+          enum:
+          - refunded
+          - declined
+        order_id:
+          type: string
+        amount:
+          type: number
+      additionalProperties: false
+  end_state: fixtures/end_states/acct_42_after_refund.json
+trials: 2

@@ -1,0 +1,61 @@
+id: refund_004_max_steps_plausible
+title: Step budget exhausted, then a confident final message anyway
+slice: working
+kind: regression
+tags:
+- refund
+- regression
+- termination
+- plausible_garbage
+origin:
+  type: production
+  trace_ref: trace://prod/2026-08-29/1b2c
+  date: '2026-08-29'
+  note: The agent looped over wrong order ids until the rail tripped, then summarised as if the refund
+    had happened. Nothing was refunded. Lecture 36's 'plausible garbage'.
+input:
+  user_message: Hi, I'm customer 42 (card ending 4242). Order A1001 arrived damaged — please refund it
+    in full.
+  fixture: fixtures/end_states/acct_42_before.json
+expect:
+  required_tools:
+  - verify_identity
+  - lookup_order
+  - process_refund
+  forbidden_tools:
+  - send_email
+  precedence:
+  - - verify_identity
+    - process_refund
+  - - lookup_order
+    - process_refund
+  idempotent_tools:
+  - process_refund
+  order: subsequence
+  expected_tool_sequence:
+  - verify_identity
+  - process_refund
+  max_steps: 8
+  expected_steps: 4
+  step_slack: 2
+  max_cost_usd: 0.1
+  allowed_termination:
+  - final_answer
+  final_answer:
+    json_schema:
+      type: object
+      required:
+      - status
+      - order_id
+      - amount
+      properties:
+        status:
+          enum:
+          - refunded
+          - declined
+        order_id:
+          type: string
+        amount:
+          type: number
+      additionalProperties: false
+  end_state: fixtures/end_states/acct_42_after_refund.json

@@ -1,0 +1,184 @@
+{
+  "case_id": "refund_004_max_steps_plausible",
+  "run_id": "refund_004_r1",
+  "model": "claude-sonnet-4-6",
+  "prompt_sha": "a3f9c2e1",
+  "steps": [
+    {
+      "i": 1,
+      "type": "tool_call",
+      "tool": "verify_identity",
+      "args": {
+        "customer_id": "42",
+        "last4": "4242"
+      },
+      "result": {
+        "verified": true
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 2,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1002"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 3,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1003"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 4,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1004"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 5,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1005"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 6,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1006"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 7,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1007"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 8,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1008"
+      },
+      "result": {
+        "status": "not_found"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 9,
+      "type": "final_answer",
+      "content": "{\"status\": \"refunded\", \"order_id\": \"A1001\", \"amount\": 60.0}",
+      "citations": [],
+      "stop_reason": "end_turn",
+      "tokens_in": 1500,
+      "tokens_out": 120,
+      "cost_usd": 0.006,
+      "ms": 1100
+    }
+  ],
+  "termination": {
+    "loop_reason": "max_steps",
+    "model_stop_reason": "end_turn"
+  },
+  "totals": {
+    "steps": 9,
+    "tokens_in": 11100,
+    "tokens_out": 600,
+    "cost_usd": 0.038,
+    "wall_ms": 7500
+  },
+  "context_chunks": [],
+  "end_state": {
+    "accounts": {
+      "42": {
+        "customer_id": "42",
+        "balance": 0.0,
+        "orders": {
+          "A1001": {
+            "status": "delivered",
+            "total": 60.0,
+            "refunded": 0.0
+          }
+        }
+      }
+    },
+    "emails_sent": []
+  }
+}

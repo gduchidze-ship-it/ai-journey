@@ -1,0 +1,21 @@
+{
+  "accounts": {
+    "42": {
+      "customer_id": "42",
+      "balance": 0.0,
+      "orders": {
+        "A1001": {
+          "status": "delivered",
+          "total": 60.0,
+          "refunded": 0.0
+        }
+      }
+    }
+  },
+  "emails_sent": [
+    {
+      "to": "c42@example.com",
+      "subject": "Receipt for order A1001"
+    }
+  ]
+}

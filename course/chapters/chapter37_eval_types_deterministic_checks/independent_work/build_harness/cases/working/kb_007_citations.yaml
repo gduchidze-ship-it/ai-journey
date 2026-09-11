@@ -1,0 +1,29 @@
+id: kb_007_citations
+title: Policy question answered from the knowledge base with a valid citation
+slice: working
+kind: regression
+tags:
+- kb
+- regression
+- citations
+origin:
+  type: handwritten
+  date: '2026-09-05'
+input:
+  user_message: What's the return window for an item that has already been delivered?
+expect:
+  required_tools:
+  - search_kb
+  forbidden_tools:
+  - process_refund
+  - send_email
+  max_steps: 4
+  expected_steps: 2
+  final_answer:
+    contains_all:
+    - 30 days
+  citations:
+    required: true
+    must_include:
+    - chunk_7
+    all_valid: true

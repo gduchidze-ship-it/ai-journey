@@ -1,0 +1,29 @@
+id: kb_008_invalid_citation
+title: Answer cites a chunk that was never retrieved
+slice: working
+kind: regression
+tags:
+- kb
+- regression
+- citations
+- incident-2026-09-01
+origin:
+  type: production
+  trace_ref: trace://prod/2026-09-01/9d0e
+  date: '2026-09-01'
+  note: Right answer, invented citation id. Would pass any check on the text.
+input:
+  user_message: What's the return window for an item that has already been delivered?
+expect:
+  required_tools:
+  - search_kb
+  max_steps: 4
+  expected_steps: 2
+  final_answer:
+    contains_all:
+    - 30 days
+  citations:
+    required: true
+    must_include:
+    - chunk_7
+    all_valid: true

@@ -1,0 +1,122 @@
+{
+  "case_id": "refund_003_double_refund",
+  "run_id": "refund_003_r1",
+  "model": "claude-sonnet-4-6",
+  "prompt_sha": "a3f9c2e1",
+  "steps": [
+    {
+      "i": 1,
+      "type": "tool_call",
+      "tool": "verify_identity",
+      "args": {
+        "customer_id": "42",
+        "last4": "4242"
+      },
+      "result": {
+        "verified": true
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 2,
+      "type": "tool_call",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "A1001"
+      },
+      "result": {
+        "status": "delivered",
+        "total": 60.0
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 3,
+      "type": "tool_call",
+      "tool": "process_refund",
+      "args": {
+        "order_id": "A1001",
+        "amount": 60.0,
+        "reason": "damaged on arrival"
+      },
+      "result": {
+        "error": "timeout"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 4,
+      "type": "tool_call",
+      "tool": "process_refund",
+      "args": {
+        "order_id": "A1001",
+        "amount": 60.0,
+        "reason": "damaged on arrival"
+      },
+      "result": {
+        "ok": true,
+        "refund_id": "RF-3"
+      },
+      "error": null,
+      "stop_reason": "tool_use",
+      "tokens_in": 1200,
+      "tokens_out": 60,
+      "cost_usd": 0.004,
+      "ms": 800
+    },
+    {
+      "i": 5,
+      "type": "final_answer",
+      "content": "{\"status\": \"refunded\", \"order_id\": \"A1001\", \"amount\": 60.0}",
+      "citations": [],
+      "stop_reason": "end_turn",
+      "tokens_in": 1500,
+      "tokens_out": 120,
+      "cost_usd": 0.006,
+      "ms": 1100
+    }
+  ],
+  "termination": {
+    "loop_reason": "final_answer",
+    "model_stop_reason": "end_turn"
+  },
+  "totals": {
+    "steps": 5,
+    "tokens_in": 6300,
+    "tokens_out": 360,
+    "cost_usd": 0.022,
+    "wall_ms": 4300
+  },
+  "context_chunks": [],
+  "end_state": {
+    "accounts": {
+      "42": {
+        "customer_id": "42",
+        "balance": 120.0,
+        "orders": {
+          "A1001": {
+            "status": "refunded",
+            "total": 60.0,
+            "refunded": 120.0
+          }
+        }
+      }
+    },
+    "emails_sent": []
+  }
+}

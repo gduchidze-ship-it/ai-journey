@@ -1,0 +1,59 @@
+id: cap_013_two_orders_one_message
+title: Two orders, one damaged, one fine — refund only the damaged one
+slice: working
+kind: capability
+tags:
+- refund
+- capability
+- multi_order
+origin:
+  type: synthetic
+  date: '2026-09-08'
+  note: Generated from the dimension grid (orders=2, damaged=1). Not yet seen in production; not yet human-promoted.
+    No trajectory recorded yet — the runner must report it as NODATA, not as a pass.
+input:
+  user_message: Customer 42, card 4242. Orders A1001 and A1002 arrived; A1001 is damaged, A1002 is fine.
+    Refund the damaged one.
+  fixture: fixtures/end_states/acct_42_before.json
+expect:
+  required_tools:
+  - verify_identity
+  - lookup_order
+  - process_refund
+  forbidden_tools:
+  - send_email
+  precedence:
+  - - verify_identity
+    - process_refund
+  - - lookup_order
+    - process_refund
+  idempotent_tools:
+  - process_refund
+  order: subsequence
+  expected_tool_sequence:
+  - verify_identity
+  - process_refund
+  max_steps: 8
+  expected_steps: 5
+  step_slack: 2
+  max_cost_usd: 0.1
+  allowed_termination:
+  - final_answer
+  final_answer:
+    json_schema:
+      type: object
+      required:
+      - status
+      - order_id
+      - amount
+      properties:
+        status:
+          enum:
+          - refunded
+          - declined
+        order_id:
+          type: string
+        amount:
+          type: number
+      additionalProperties: false
+  end_state: null
